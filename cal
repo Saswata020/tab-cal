@@ -1,0 +1,20 @@
+IF YEAR([Closed Date]) = 2024 THEN NULL
+ELSEIF YEAR([Closed Date]) = 2025 THEN 
+    IF ZN(
+        SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
+        NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
+    ) IS NULL THEN NULL
+    ELSE 
+        (
+            (SUM(IF YEAR([Closed Date]) = 2025 THEN [NUM_VALUE] END) /
+            NULLIF(SUM(IF YEAR([Closed Date]) = 2025 THEN [DENOM_VALUE] END), 0))
+            - 
+            (SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
+            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0))
+        )
+        / ABS(
+            SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
+            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
+        ) * 100
+    END
+END
