@@ -1,20 +1,18 @@
 IF YEAR([Closed Date]) = 2024 THEN NULL
 ELSEIF YEAR([Closed Date]) = 2025 THEN 
-    IF ZN(
+    // Calculate the rate for 2024
+    VAR Rate_2024 = 
         SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
         NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
-    ) IS NULL THEN NULL
+
+    // Calculate the rate for 2025
+    VAR Rate_2025 = 
+        SUM(IF YEAR([Closed Date]) = 2025 THEN [NUM_VALUE] END) /
+        NULLIF(SUM(IF YEAR([Closed Date]) = 2025 THEN [DENOM_VALUE] END), 0)
+
+    // Return NULL if Rate 2024 is missing to prevent division error
+    IF ISNULL(Rate_2024) THEN NULL
     ELSE 
-        (
-            (SUM(IF YEAR([Closed Date]) = 2025 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2025 THEN [DENOM_VALUE] END), 0))
-            - 
-            (SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0))
-        )
-        / ABS(
-            SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
-        ) * 100
+        ((Rate_2025 - Rate_2024) / ABS(Rate_2024)) * 100
     END
 END
