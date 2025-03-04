@@ -1,21 +1,16 @@
 IF YEAR([Closed Date]) = 2024 THEN NULL
 ELSEIF YEAR([Closed Date]) = 2025 THEN 
-    // Calculate Rate 2024
-    IF ISNULL(
+    // Compute aggregated rates for 2024 and 2025
+    ZN(
+        (SUM(IF YEAR([Closed Date]) = 2025 THEN [NUM_VALUE] END) /
+        NULLIF(SUM(IF YEAR([Closed Date]) = 2025 THEN [DENOM_VALUE] END), 0))
+        -
+        (SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
+        NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0))
+    ) 
+    /
+    NULLIF(ABS(
         SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
         NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
-    ) THEN NULL
-    ELSE 
-        (
-            (SUM(IF YEAR([Closed Date]) = 2025 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2025 THEN [DENOM_VALUE] END), 0))
-            - 
-            (SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0))
-        )
-        / ABS(
-            SUM(IF YEAR([Closed Date]) = 2024 THEN [NUM_VALUE] END) /
-            NULLIF(SUM(IF YEAR([Closed Date]) = 2024 THEN [DENOM_VALUE] END), 0)
-        ) * 100
-    END
+    ), 0) * 100
 END
