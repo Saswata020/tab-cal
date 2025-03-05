@@ -1,0 +1,4 @@
+(AVG({ FIXED DATETRUNC('month', [Date]) : AVG([Rate]) }) 
+ - LOOKUP(AVG({ FIXED DATETRUNC('month', [Date]) : AVG([Rate]) }), -1))
+/
+ LOOKUP(AVG({ FIXED DATETRUNC('month', [Date]) : AVG([Rate]) }), -1)
